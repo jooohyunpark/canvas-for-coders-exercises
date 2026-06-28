@@ -24,25 +24,28 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000,
 );
-camera.position.set(-15, 10, 15);
+camera.position.set(15, 10, 15);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.update();
 
+scene.add(new THREE.AxesHelper(5));
+
 const loader = new GLTFLoader();
 loader.load("/Voyager.glb", (gltf) => {
+  gltf.scene.rotation.y = Math.PI / 2;
   scene.add(gltf.scene);
 });
 
 const points = {
   overview: {
-    position: { x: -10, y: 5, z: 10 },
-    controlTarget: { x: 0, y: 1, z: 0 },
+    position: { x: 15, y: 10, z: 15 },
+    controlTarget: { x: 0, y: 0, z: 0 },
   },
   antenna: {
-    position: { x: 2, y: 7, z: 3 },
-    controlTarget: { x: 0, y: 4, z: 0 },
+    position: { x: -3, y: 5, z: 5 },
+    controlTarget: { x: 0, y: 1.5, z: 0 },
   },
   "golden-record": {
     position: { x: -3, y: 2, z: 6 },
