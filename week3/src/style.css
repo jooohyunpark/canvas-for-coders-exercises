@@ -4,12 +4,13 @@ body {
 }
 
 #ui {
-  position: absolute;
+  position: fixed;
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
+  z-index: 1;
 }
 
 #ui button {
