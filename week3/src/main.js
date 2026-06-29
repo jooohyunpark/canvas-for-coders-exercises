@@ -32,6 +32,8 @@ controls.update();
 
 scene.add(new THREE.AxesHelper(5));
 
+// --- Voyager ---
+
 const loader = new GLTFLoader();
 loader.load("/Voyager.glb", (gltf) => {
   gltf.scene.rotation.y = Math.PI / 2;
@@ -44,16 +46,16 @@ const points = {
     controlTarget: { x: 0, y: 0, z: 0 },
   },
   antenna: {
-    position: { x: -3, y: 5, z: 5 },
+    position: { x: -3, y: 5, z: 6 },
     controlTarget: { x: 0, y: 1.5, z: 0 },
   },
   "golden-record": {
-    position: { x: -3, y: 2, z: 6 },
-    controlTarget: { x: 0, y: 1, z: 0 },
+    position: { x: 0, y: 0, z: -3 },
+    controlTarget: { x: 0, y: 0, z: 0 },
   },
 };
 
-document.querySelectorAll("#ui button").forEach((btn) => {
+document.querySelectorAll("[data-point]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const { position, controlTarget } = points[btn.dataset.point];
 
@@ -62,8 +64,7 @@ document.querySelectorAll("#ui button").forEach((btn) => {
       y: position.y,
       z: position.z,
       duration: 1,
-      ease: "power3.out",
-      onUpdate: () => controls.update(),
+      ease: "power2.out",
     });
 
     gsap.to(controls.target, {
@@ -71,13 +72,27 @@ document.querySelectorAll("#ui button").forEach((btn) => {
       y: controlTarget.y,
       z: controlTarget.z,
       duration: 1,
-      ease: "power3.out",
-      onUpdate: () => controls.update(),
+      ease: "power2.out",
     });
   });
 });
 
+// --- Orbiting moon ---
+
+const orbitGroup = new THREE.Group();
+scene.add(orbitGroup);
+
+const moon = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 64, 32),
+  new THREE.MeshStandardMaterial({ color: 0xbbbbbb }),
+);
+moon.position.x = 10;
+orbitGroup.add(moon);
+
+// --- Loop ---
+
 renderer.setAnimationLoop(() => {
+  orbitGroup.rotation.y += 0.002;
   controls.update();
   renderer.render(scene, camera);
 });
