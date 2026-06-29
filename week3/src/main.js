@@ -2,7 +2,6 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import gsap from "gsap";
 
 const app = document.querySelector("#app");
@@ -14,9 +13,9 @@ app.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 
-const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment()).texture;
-pmrem.dispose();
+const light = new THREE.DirectionalLight("white", 10);
+light.position.set(1, 1, -1);
+scene.add(light);
 
 const camera = new THREE.PerspectiveCamera(
   35,
@@ -82,17 +81,20 @@ document.querySelectorAll("[data-point]").forEach((btn) => {
 const orbitGroup = new THREE.Group();
 scene.add(orbitGroup);
 
+const moonTexture = new THREE.TextureLoader().load("/moon-texture.jpg");
+moonTexture.colorSpace = THREE.SRGBColorSpace;
+
 const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(0.5, 64, 32),
-  new THREE.MeshStandardMaterial({ color: 0xbbbbbb }),
+  new THREE.SphereGeometry(1, 64, 32),
+  new THREE.MeshStandardMaterial({ map: moonTexture }),
 );
-moon.position.x = 10;
+moon.position.z = -30;
 orbitGroup.add(moon);
 
 // --- Loop ---
 
 renderer.setAnimationLoop(() => {
-  orbitGroup.rotation.y += 0.002;
+  orbitGroup.rotation.y += 0.0005;
   controls.update();
   renderer.render(scene, camera);
 });
