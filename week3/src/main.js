@@ -29,8 +29,6 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.update();
 
-scene.add(new THREE.AxesHelper(5));
-
 // --- Voyager ---
 
 const loader = new GLTFLoader();
