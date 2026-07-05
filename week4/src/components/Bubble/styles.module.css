@@ -1,0 +1,19 @@
+.bubble {
+  max-width: 75%;
+  width: fit-content;
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 16px;
+}
+
+.user {
+  margin-left: auto;
+  background: #007aff;
+  color: white;
+}
+
+.agent {
+  margin-right: auto;
+  background: #e5e5ea;
+  color: black;
+}
