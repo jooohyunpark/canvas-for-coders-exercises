@@ -53,7 +53,7 @@ const EMOJIS = [
 
 export function sendMessage(prompt) {
   const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-  const delay = 500 + Math.random() * 1500; // 500–2000ms
+  const delay = 200 + Math.random() * 1300; // 200–1500ms
   return new Promise((resolve) => {
     setTimeout(() => resolve(emoji), delay);
   });

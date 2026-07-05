@@ -39,7 +39,7 @@ export default function App() {
             {message.text}
           </Bubble>
         ))}
-        {isTyping && <Bubble type="agent">typing…</Bubble>}
+        {isTyping && <Bubble type="agent">…</Bubble>}
         <div ref={endRef} />
       </div>
       <Composer onSend={handleSend} />
