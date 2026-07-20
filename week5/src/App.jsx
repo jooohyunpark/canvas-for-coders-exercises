@@ -42,9 +42,13 @@ function Background({ color }) {
   );
 }
 
-function Scene({ onSelect }) {
+function Scene() {
+  const [background, setBackground] = useState("black");
+
   return (
     <>
+      <Background color={background} />
+
       {COLORS.map((color, index) => {
         const angle = (index / COLORS.length) * Math.PI * 2;
 
@@ -54,7 +58,7 @@ function Scene({ onSelect }) {
             color={color}
             position={[Math.sin(angle) * RADIUS, 0, Math.cos(angle) * RADIUS]}
             rotation={[0, angle, 0]}
-            onSelect={() => onSelect(color)}
+            onSelect={() => setBackground(color)}
           />
         );
       })}
@@ -63,8 +67,6 @@ function Scene({ onSelect }) {
 }
 
 export default function App() {
-  const [background, setBackground] = useState("black");
-
   return (
     <div id="app">
       <Canvas flat>
@@ -75,9 +77,8 @@ export default function App() {
           near={-100}
           far={100}
         />
-        <Background color={background} />
         <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} />
-        <Scene onSelect={setBackground} />
+        <Scene />
       </Canvas>
     </div>
   );
