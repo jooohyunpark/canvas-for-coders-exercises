@@ -1,122 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, OrthographicCamera } from "@react-three/drei";
+import { animated, useSpring, easings } from "@react-spring/three";
+import * as THREE from "three";
+import "./styles.css";
+import { Door } from "./components/Door";
 
-function App() {
-  const [count, setCount] = useState(0)
+const COLORS = [
+  "#ff4d4d",
+  "#ff9f1c",
+  "#ffe14d",
+  "#9bde4d",
+  "#3ddc84",
+  "#2ec4b6",
+  "#4dabff",
+  "#6b6bff",
+  "#b45cff",
+  "#ff5cc8",
+];
+
+const RADIUS = 5;
+
+// args are constructor arguments, so animating them would rebuild the
+// color rather than ease it — spring the r/g/b channels in place instead
+function Background({ color }) {
+  const { r, g, b } = new THREE.Color(color);
+  const spring = useSpring({
+    r,
+    g,
+    b,
+    config: { duration: 500, easing: easings.easeOutCubic },
+  });
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <animated.color
+      attach="background"
+      r={spring.r}
+      g={spring.g}
+      b={spring.b}
+    />
+  );
 }
 
-export default App
+function Scene({ onSelect }) {
+  return (
+    <>
+      {COLORS.map((color, index) => {
+        const angle = (index / COLORS.length) * Math.PI * 2;
+
+        return (
+          <Door
+            key={color}
+            color={color}
+            position={[Math.sin(angle) * RADIUS, 0, Math.cos(angle) * RADIUS]}
+            rotation={[0, angle, 0]}
+            onSelect={() => onSelect(color)}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+export default function App() {
+  const [background, setBackground] = useState("black");
+
+  return (
+    <div id="app">
+      <Canvas flat>
+        <OrthographicCamera
+          makeDefault
+          position={[-10, 5, 10]}
+          zoom={24}
+          near={-100}
+          far={100}
+        />
+        <Background color={background} />
+        <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} />
+        <Scene onSelect={setBackground} />
+      </Canvas>
+    </div>
+  );
+}
